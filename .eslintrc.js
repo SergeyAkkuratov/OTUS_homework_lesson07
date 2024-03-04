@@ -15,11 +15,23 @@ module.exports = {
         sourceType: "script",
       },
     },
+    {
+      files: ["*.html"],
+      parser: "@html-eslint/parser",
+      extends: ["plugin:@html-eslint/recommended"],
+    },
   ],
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["jest"],
-  rules: {},
+  plugins: ["jest", "@html-eslint"],
+  rules: {
+    "import/extensions": [
+      "off",
+      {
+        ignorePackages: true,
+      },
+    ],
+  },
 };
