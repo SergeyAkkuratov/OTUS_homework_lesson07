@@ -30,7 +30,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: generate-preview-url # name of this step, you can rename this as needed
-        uses: crafting-dev/sandbox-launch-action@0.5.3 # update the version as needed
+        uses: crafting-dev/sandbox-launch-action@master # update the version as needed
         with:
           # required inputs for sandbox-launch-action to specify the target template.
           template: TEMPLATE_NAME
