@@ -1,0 +1,33 @@
+<!-- eslint-disable @html-eslint/no-multiple-h1 -->
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Wwather Application</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div id="main">
+            <!--Весь этот блок будет переписан через метод, это просто статическая заглушка-->
+            <div class="info-block">
+                <form id="weatherForm" class="form-block">
+                    <input id="userInput" placeholder="Type city and press enter" required autofocus>
+                    <button id="bGetWeather">Get weather</button>
+                </form>
+                <div id="weather">
+                    <img id="map"
+                        src="https://static-maps.yandex.ru/v1?ll=37.6156,55.7522&size=300,300&z=8&apikey=21ae407c-6788-4393-bbfa-d1cf463287b0"
+                        alt="Couldn't get image of map"></img>
+                </div>
+                <div id="info">
+                    <span>Moscow</span>
+                    <img src="http://openweathermap.org/img/wn/04n@2x.png" alt="Couldn't get icon of weather">
+                    <span>Температура: 2 C</span>
+                </div>
+            </div>
+            <div id="history" class="history-block">
+                <span>History:</span>
+            </div>
+        </div>
+        <script type="module" src="./index.js"></script>
+    </body>
+</html>
