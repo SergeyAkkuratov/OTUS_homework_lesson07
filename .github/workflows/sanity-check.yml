@@ -1,4 +1,4 @@
-name: PR Sanity Check
+name: PR Check, GitHub Pages deploy, Snadbox link
 
 on: pull_request
 
@@ -20,3 +20,35 @@ jobs:
       - name: Lint check
         run: |
           npm run test
+          
+  build:
+    # name of the job, you can rename this as needed
+    name: Crafting Preview Link
+    runs-on: [ubuntu-latest]
+    env:
+      # This tells the action to use the token so that it can post a comment to PR.
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: generate-preview-url # name of this step, you can rename this as needed
+        uses: crafting-dev/sandbox-launch-action@0.5.3 # update the version as needed
+        with:
+          # required inputs for sandbox-launch-action to specify the target template.
+          template: TEMPLATE_NAME
+
+  deploy-site:
+    runs-on: ubuntu-latest
+    needs: lint
+    
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      # environment created automatically by GitHub
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -33,5 +33,6 @@ module.exports = {
         ignorePackages: true,
       },
     ],
+    "@html-eslint/indent": ["error", 4],
   },
 };
