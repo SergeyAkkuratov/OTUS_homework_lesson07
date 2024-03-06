@@ -32,6 +32,17 @@ jobs:
       - name: Test check
         run: |
           npm run test
+  
+  annotate_pull_request:
+    runs-on: ubuntu-latest
+    name: perform annotation
+    steps:
+      - name: annotation action step
+        id: annotation
+        uses: kherin/pr-comment-action@v1.0.1
+        with:
+          annotation-url: "https://githubbox.com/"
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   # Single deploy job since we're just deploying
   deploy:
@@ -39,6 +50,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    needs: check
     steps:
       - name: Checkout
         uses: actions/checkout@v4
