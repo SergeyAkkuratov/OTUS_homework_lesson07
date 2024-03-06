@@ -32,7 +32,7 @@ jobs:
       - name: Test check
         run: |
           npm run test
-  
+
   annotate_pull_request:
     runs-on: ubuntu-latest
     name: perform annotation
