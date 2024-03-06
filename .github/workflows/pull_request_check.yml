@@ -3,7 +3,7 @@ name: PR Check, GitHub Pages deploy, CodeSandbox link
 on:
   pull_request:
     branches:
-      - main
+      - sakkuratov
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
