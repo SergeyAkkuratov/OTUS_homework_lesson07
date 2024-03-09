@@ -1,5 +1,3 @@
-function initFunction(text) {
-  return text;
-}
+import weatherApp from "./weatherApp.js";
 
-export default initFunction;
+weatherApp(document.querySelector("#main"));
