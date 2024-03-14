@@ -1,0 +1,55 @@
+.form-block {
+  clear: both;
+  margin: 20px;
+  height: 10%;
+}
+
+.history-block {
+  float: right;
+}
+
+.history-block span {
+  font-size: 2em;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.info-block {
+  float: left;
+}
+
+.info-block div {
+  display: inline-block;
+  width: 300px;
+  height: 300px;
+  vertical-align: top;
+}
+
+#info span {
+  display: block;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+#map {
+  width: 300px;
+  height: 300px;
+  vertical-align: top;
+}
+
+.history-block p {
+  font-size: 2em;
+}
+
+.history-block p:link {
+  color: blue;
+}
+
+.history-block p:visited {
+  color: green;
+}
+
+.history-block p:hover {
+  color: red;
+  cursor: pointer;
+}
