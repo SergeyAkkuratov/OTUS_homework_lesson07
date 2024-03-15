@@ -1,33 +1,38 @@
 /* eslint-disable no-alert */
 /* eslint no-param-reassign: ["error", { "props": false }] */
-const maxHistorylines = 10;
+// eslint-disable-next-line import/no-self-import
+import * as mainModule from "./weatherApp";
+import oopsImg from "./assets/oops.png";
 
-async function getWeather(cityName) {
+const maxHistorylines = 10;
+const historyList = new Set();
+
+export async function getWeather(cityName) {
   const response = await fetch(
     `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${cityName}&appid=862e72718d993f06e2ca165446011711`,
   );
   return response.json();
 }
 
-async function getMap(coord) {
+export async function getMap(coord) {
   const response = await fetch(
     `https://static-maps.yandex.ru/v1?ll=${coord.lon},${coord.lat}&size=300,300&z=8&apikey=21ae407c-6788-4393-bbfa-d1cf463287b0`,
   );
   return response.blob();
 }
 
-async function getInfoByIP() {
+export async function getInfoByIP() {
   const response = await fetch(
     `https://ipgeolocation.abstractapi.com/v1/?api_key=763242ab3637495ba08023d1154aa96a`,
   );
   return response.json();
 }
 
-export default async function weatherApp(element) {
+export async function weatherApp(element) {
   function showWeather(data) {
     const weatherInfo = element.querySelector("#info");
     weatherInfo.innerHTML = `<h1>${data.name}</h1>`;
-    weatherInfo.innerHTML += `<h2>Температура: ${data.main.temp} C</h2>`;
+    weatherInfo.innerHTML += `<h2>Temperature: ${data.main.temp} C</h2>`;
     weatherInfo.innerHTML += `<img src="http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="Couldn't load icon of weather">`;
   }
 
@@ -36,11 +41,11 @@ export default async function weatherApp(element) {
   }
 
   async function updateWeather(cityName, updateHistoryFlag) {
-    const weather = await getWeather(cityName);
+    const weather = await mainModule.getWeather(cityName);
     if (weather.cod === 200) {
       // eslint-disable-next-line no-use-before-define
       if (updateHistoryFlag) await updateHistoryBlock(cityName);
-      const map = await getMap(weather.coord);
+      const map = await mainModule.getMap(weather.coord);
       showMap(map);
       showWeather(weather);
     } else {
@@ -54,17 +59,21 @@ export default async function weatherApp(element) {
 
   async function updateHistoryBlock(cityName) {
     const historyElement = element.querySelector("#history");
-    const p = document.createElement("p");
-    p.innerHTML = cityName;
-    p.addEventListener("click", onclickHistoryLine);
-    historyElement.appendChild(p);
-    const pList = historyElement.querySelectorAll("p");
-    if (pList.length > maxHistorylines) {
-      historyElement.removeChild(pList[0]);
+    if (!historyList.has(cityName)) {
+      historyList.add(cityName);
+      const p = document.createElement("p");
+      p.innerHTML = cityName;
+      p.addEventListener("click", onclickHistoryLine);
+      historyElement.appendChild(p);
+      const pList = historyElement.querySelectorAll("p");
+      if (pList.length > maxHistorylines) {
+        historyElement.removeChild(pList[0]);
+        historyList.delete(cityName);
+      }
     }
   }
 
-  const ipInfo = await getInfoByIP();
+  const ipInfo = await mainModule.getInfoByIP();
 
   element.innerHTML = `
   <div class="info-block">
@@ -74,7 +83,7 @@ export default async function weatherApp(element) {
     </form>
     <div id="weather">
         <img id="map"
-            src="./oops.png"
+            src="${oopsImg}"
             alt="Couldn't get image of map"></img>
     </div>
     <div id="info">
