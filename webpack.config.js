@@ -8,7 +8,13 @@ module.exports = {
     chunkFilename: "[name].chunk.js",
     path: path.resolve(__dirname, "dist"),
   },
-  plugins: [new HtmlWebpackPlugin()],
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "./src/template.html",
+      favicon: "./src/assets/favicon.png",
+      filename: "./index.html",
+    }),
+  ],
   module: {
     rules: [
       {
