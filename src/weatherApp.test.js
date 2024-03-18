@@ -51,21 +51,7 @@ const ipInfo = {
 
 describe("Weather application tests", () => {
   let el;
-
-  // Моки
-  const weatherMock = jest
-    .spyOn(mainModule, "getWeather")
-    .mockReturnValue(weather.Moscow);
-  jest
-    .spyOn(mainModule, "getMap")
-    .mockReturnValue(
-      new Blob([fs.readFileSync("./src/assets/test_blob_map.png")]),
-    );
-  jest.spyOn(mainModule, "getInfoByIP").mockReturnValue(ipInfo);
-  global.URL.createObjectURL = jest.fn(
-    () => "blob:http://localhost:8080/dbdb41a6-c771-4692-bdc1-594a6dd28ef5",
-  );
-  jest.spyOn(window, "alert").mockImplementation(() => {});
+  let weatherMock;
 
   // Вспомогательные функции
   function getWeatherHtmlStrign(cityName) {
@@ -96,6 +82,21 @@ describe("Weather application tests", () => {
   }
 
   beforeEach(() => {
+    // Моки
+    weatherMock = jest
+      .spyOn(mainModule, "getWeather")
+      .mockReturnValue(weather.Moscow);
+    jest
+      .spyOn(mainModule, "getMap")
+      .mockReturnValue(
+        new Blob([fs.readFileSync("./src/assets/test_blob_map.png")]),
+      );
+    jest.spyOn(mainModule, "getInfoByIP").mockReturnValue(ipInfo);
+    global.URL.createObjectURL = jest.fn(
+      () => "blob:http://localhost:8080/dbdb41a6-c771-4692-bdc1-594a6dd28ef5",
+    );
+    jest.spyOn(window, "alert").mockImplementation(() => {});
+
     el = document.createElement("div");
     mainModule.weatherApp(el);
   });
@@ -212,12 +213,12 @@ describe("Fetch functions tests", () => {
   it("Test getWeather function", async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({
-        json: () => Promise.resolve(weather.Moscow),
+        json: () => Promise.resolve(weather["Saint Petersburg"]),
       }),
     );
 
     const result = await mainModule.getWeather("DefaultCity");
-    expect(result).toBe(weather.Moscow);
+    expect(result).toBe(weather["Saint Petersburg"]);
   });
 
   it("Test get ipInfo function", async () => {
