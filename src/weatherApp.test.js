@@ -1,57 +1,17 @@
+/* eslint-disable import/no-named-as-default-member */
 /* eslint-disable no-import-assign */
-import fs from "fs";
-import { Blob } from "buffer";
-import * as mainModule from "./weatherApp";
+import weatherApp from "./weatherApp";
+import exteranlApi from "./externalRequests";
+import { weather, ipInfo, testBlob } from "./commonTestData";
 
-// Данные для мокирования
-const weather = {
-  Moscow: {
-    coord: {
-      lon: 37.6156,
-      lat: 55.7522,
-    },
-    weather: [
-      {
-        icon: "04d",
-      },
-    ],
-    main: {
-      temp: 2,
-    },
-    id: 524901,
-    name: "Moscow",
-    cod: 200,
-  },
-  "Saint Petersburg": {
-    coord: {
-      lat: 59.8944,
-      lon: 30.2642,
-    },
-    weather: [
-      {
-        icon: "04n",
-      },
-    ],
-    main: {
-      temp: 1,
-    },
-    id: 498817,
-    name: "Saint Petersburg",
-    cod: 200,
-  },
-  Error_city: {
-    cod: 404,
-    message: "city not found",
-  },
-};
-
-const ipInfo = {
-  region: "Moscow",
-};
+jest.mock("./externalRequests", () => ({
+  getWeather: jest.fn(),
+  getMap: jest.fn(),
+  getInfoByIP: jest.fn(),
+}));
 
 describe("Weather application tests", () => {
   let el;
-  let weatherMock;
 
   // Вспомогательные функции
   function getWeatherHtmlStrign(cityName) {
@@ -59,7 +19,8 @@ describe("Weather application tests", () => {
   }
 
   function specifyCityName(cityName) {
-    if (cityName in weather) weatherMock.mockReturnValueOnce(weather[cityName]);
+    if (cityName in weather)
+      exteranlApi.getWeather.mockReturnValueOnce(weather[cityName]);
     const input = el.querySelector("#userInput");
     input.value = cityName;
   }
@@ -75,7 +36,8 @@ describe("Weather application tests", () => {
   }
 
   function historyCityNameClick(cityName) {
-    if (cityName in weather) weatherMock.mockReturnValueOnce(weather[cityName]);
+    if (cityName in weather)
+      exteranlApi.getWeather.mockReturnValueOnce(weather[cityName]);
     [...el.querySelector("#history").querySelectorAll("p")]
       .find((element) => element.innerHTML.trim() === cityName)
       .click();
@@ -83,22 +45,17 @@ describe("Weather application tests", () => {
 
   beforeEach(() => {
     // Моки
-    weatherMock = jest
-      .spyOn(mainModule, "getWeather")
-      .mockReturnValue(weather.Moscow);
-    jest
-      .spyOn(mainModule, "getMap")
-      .mockReturnValue(
-        new Blob([fs.readFileSync("./src/assets/test_blob_map.png")]),
-      );
-    jest.spyOn(mainModule, "getInfoByIP").mockReturnValue(ipInfo);
+    exteranlApi.getWeather.mockReturnValue(weather.Moscow);
+    exteranlApi.getInfoByIP.mockReturnValue(ipInfo);
+    exteranlApi.getMap.mockReturnValue(testBlob);
     global.URL.createObjectURL = jest.fn(
       () => "blob:http://localhost:8080/dbdb41a6-c771-4692-bdc1-594a6dd28ef5",
     );
     jest.spyOn(window, "alert").mockImplementation(() => {});
 
+    // запуск основной функции
     el = document.createElement("div");
-    mainModule.weatherApp(el);
+    weatherApp(el);
   });
 
   it("User see map on startup", () => {
@@ -206,45 +163,5 @@ describe("Weather application tests", () => {
     await new Promise(process.nextTick);
 
     expect(getAllHistoryParagraphs()).toStrictEqual(["DefaultCity"]);
-  });
-});
-
-describe("Fetch functions tests", () => {
-  it("Test getWeather function", async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () => Promise.resolve(weather["Saint Petersburg"]),
-      }),
-    );
-
-    const result = await mainModule.getWeather("DefaultCity");
-    expect(result).toBe(weather["Saint Petersburg"]);
-  });
-
-  it("Test get ipInfo function", async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () => Promise.resolve(ipInfo),
-      }),
-    );
-
-    const result = await mainModule.getInfoByIP();
-    expect(result).toBe(ipInfo);
-  });
-
-  it("Test getMap function", async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        blob: () =>
-          Promise.resolve(
-            new Blob([fs.readFileSync("./src/assets/test_blob_map.png")]),
-          ),
-      }),
-    );
-
-    const result = await mainModule.getMap(weather.Moscow.coord);
-    expect(result).toStrictEqual(
-      new Blob([fs.readFileSync("./src/assets/test_blob_map.png")]),
-    );
   });
 });
