@@ -4,9 +4,6 @@
 import * as mainModule from "./weatherApp";
 import oopsImg from "./assets/oops.png";
 
-const maxHistorylines = 10;
-const historyList = new Set();
-
 export async function getWeather(cityName) {
   const response = await fetch(
     `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${cityName}&appid=862e72718d993f06e2ca165446011711`,
@@ -29,6 +26,9 @@ export async function getInfoByIP() {
 }
 
 export async function weatherApp(element) {
+  const maxHistorylines = 10;
+  const historyList = new Set();
+
   function showWeather(data) {
     const weatherInfo = element.querySelector("#info");
     weatherInfo.innerHTML = `<h1>${data.name}</h1>`;
@@ -64,11 +64,11 @@ export async function weatherApp(element) {
       const p = document.createElement("p");
       p.innerHTML = cityName;
       p.addEventListener("click", onclickHistoryLine);
-      historyElement.appendChild(p);
-      const pList = historyElement.querySelectorAll("p");
-      if (pList.length > maxHistorylines) {
-        historyElement.removeChild(pList[0]);
-        historyList.delete(cityName);
+      historyElement.querySelector("span").insertAdjacentElement("afterend", p);
+
+      if (historyElement.querySelectorAll("p").length > maxHistorylines) {
+        historyList.delete(historyElement.lastElementChild.innerHTML);
+        historyElement.removeChild(historyElement.lastElementChild);
       }
     }
   }
