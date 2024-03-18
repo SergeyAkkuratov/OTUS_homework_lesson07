@@ -1,9 +1,5 @@
 /* eslint no-console: ["warn", { allow: ["error"] }] */
 
-function logError(message) {
-  console.error(message);
-}
-
 export async function getWeather(cityName) {
   try {
     const response = await fetch(
@@ -11,7 +7,6 @@ export async function getWeather(cityName) {
     );
     return response.json();
   } catch {
-    logError(`Error during getting weather info`);
     return { cod: 500, message: `couldn't get weather info` };
   }
 }
@@ -23,7 +18,6 @@ export async function getMap(coord) {
     );
     return response.blob();
   } catch (error) {
-    logError(`Error during getting map info: ${error}`);
     return undefined;
   }
 }
@@ -35,7 +29,6 @@ export async function getInfoByIP() {
     );
     return response.json();
   } catch (error) {
-    logError(`Error during getting IP info: ${error}`);
     return { region: undefined };
   }
 }
