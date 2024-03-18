@@ -8,7 +8,7 @@
   </p>
 </p>
 
-[![Check, Build and GitHub Pages deploy](https://github.com/SergeyAkkuratov/OTUS_homework_lesson07/actions/workflows/pull_request_check.yml/badge.svg?branch=sakkuratov)](https://github.com/SergeyAkkuratov/OTUS_homework_lesson07/actions/workflows/pull_request_check.yml)
+[![Check, Build and GitHub Pages deploy](https://github.com/SergeyAkkuratov/OTUS_homework_lesson07/actions/workflows/pull_request_check.yml/badge.svg?branch=sakkuratov&event=pull_request)](https://github.com/SergeyAkkuratov/OTUS_homework_lesson07/actions/workflows/pull_request_check.yml)
 ![Contributors](https://img.shields.io/github/contributors/SergeyAkkuratov/OTUS_homework_lesson07?color=dark-green) ![Issues](https://img.shields.io/github/issues/SergeyAkkuratov/OTUS_homework_lesson07)
 
 ## Содержание
