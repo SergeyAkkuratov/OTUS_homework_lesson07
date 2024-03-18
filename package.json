@@ -4,7 +4,6 @@
   "description": "Выполнение домашнего задания для лекции \"Код как «проект» - артефакты работы разработчика. Зависимости и утилиты в стеке JavaScript\"",
   "main": "index.js",
   "scripts": {
-    "serve": "serve ./src",
     "test": "jest --passWithNoTests --coverage",
     "lint": "prettier --check . && eslint .",
     "lint:fix": "prettier --write . && eslint . --fix",
@@ -35,7 +34,6 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "prettier": "^3.2.5",
-    "serve": "^14.2.1",
     "style-loader": "^3.3.4",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4",
