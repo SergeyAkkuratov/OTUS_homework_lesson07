@@ -61,8 +61,7 @@ export default async function weatherApp(element) {
   element.innerHTML = `
   <div class="info-block">
     <form id="weatherForm" class="form-block">
-        <input id="userInput" placeholder="Type city and press enter" required autofocus>
-        <button id="bGetWeather">Get weather</button>
+        <input id="userInput" class="form-input" placeholder="Type city and press enter" required autofocus>
     </form>
     <div id="weather">
         <img id="map"
