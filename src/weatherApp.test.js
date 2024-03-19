@@ -44,6 +44,7 @@ describe("Weather application tests", () => {
   }
 
   beforeEach(() => {
+    localStorage.clear();
     // Моки
     exteranlApi.getWeather.mockReturnValue(weather.Moscow);
     exteranlApi.getInfoByIP.mockReturnValue(ipInfo);
@@ -153,7 +154,7 @@ describe("Weather application tests", () => {
     );
   });
 
-  it("History block have only one distinct city names", async () => {
+  it("History block have only distinct city names", async () => {
     for (let i = 0; i < 5; i += 1) {
       specifyCityName(`DefaultCity`);
       submit();
@@ -163,5 +164,17 @@ describe("Weather application tests", () => {
     await new Promise(process.nextTick);
 
     expect(getAllHistoryParagraphs()).toStrictEqual(["DefaultCity"]);
+  });
+
+  it("History loads from localStorage", async () => {
+    specifyCityName(`Moscow`);
+    submit();
+
+    weatherApp(el);
+
+    // Надо подождать, когда все асинк функции закончатся, а потом продолжать выполнять синхронный код
+    await new Promise(process.nextTick);
+
+    expect(getAllHistoryParagraphs()).toStrictEqual(["Moscow"]);
   });
 });

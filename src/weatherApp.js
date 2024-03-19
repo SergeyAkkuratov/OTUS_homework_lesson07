@@ -3,10 +3,11 @@
 // eslint-disable-next-line import/no-self-import
 import oopsImg from "./assets/oops.png";
 import { getInfoByIP, getMap, getWeather } from "./externalRequests";
+import { getHistorySet, setHistorySet } from "./localStorage";
 
 export default async function weatherApp(element) {
   const maxHistorylines = 10;
-  const historyList = new Set();
+  const historySet = new Set();
 
   function showWeather(data) {
     const weatherInfo = element.querySelector("#info");
@@ -41,18 +42,20 @@ export default async function weatherApp(element) {
   }
 
   async function updateHistoryBlock(cityName) {
-    const historyElement = element.querySelector("#history");
-    if (!historyList.has(cityName)) {
-      historyList.add(cityName);
+    if (!historySet.has(cityName)) {
+      const historyElement = element.querySelector("#history");
+      historySet.add(cityName);
       const p = document.createElement("p");
       p.innerHTML = cityName;
       p.addEventListener("click", onclickHistoryLine);
       historyElement.querySelector("span").insertAdjacentElement("afterend", p);
 
       if (historyElement.querySelectorAll("p").length > maxHistorylines) {
-        historyList.delete(historyElement.lastElementChild.innerHTML);
+        historySet.delete(historyElement.lastElementChild.innerHTML);
         historyElement.removeChild(historyElement.lastElementChild);
       }
+
+      setHistorySet(historySet);
     }
   }
 
@@ -75,7 +78,9 @@ export default async function weatherApp(element) {
   <div id="history" class="history-block">
     <span>History:</span>
   </div>`;
-
+  if (getHistorySet().size > 0) {
+    getHistorySet().forEach((cityName) => updateHistoryBlock(cityName));
+  }
   if (ipInfo.region) updateWeather(ipInfo.region);
 
   element
