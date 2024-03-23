@@ -1,13 +1,14 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable no-alert */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 // eslint-disable-next-line import/no-self-import
 import oopsImg from "./assets/oops.png";
 import { getInfoByIP, getMap, getWeather } from "./externalRequests";
-import { getHistorySet, setHistorySet } from "./localStorage";
+import { getHistoryList, setHistorySet } from "./localStorage";
 
 export default async function weatherApp(element) {
   const maxHistorylines = 10;
-  const historySet = new Set();
+  const historyList = [];
 
   function showWeather(data) {
     const weatherInfo = element.querySelector("#info");
@@ -27,7 +28,6 @@ export default async function weatherApp(element) {
   async function updateWeather(cityName, updateHistoryFlag) {
     const weather = await getWeather(cityName);
     if (weather.cod === 200) {
-      // eslint-disable-next-line no-use-before-define
       if (updateHistoryFlag) await updateHistoryBlock(cityName);
       const map = await getMap(weather.coord);
       showMap(map);
@@ -39,24 +39,39 @@ export default async function weatherApp(element) {
 
   function onclickHistoryLine(event) {
     updateWeather(event.target.innerHTML, false);
+    updateHistoryBlock(event.target.innerHTML);
+  }
+
+  function createHistoryParagraph(cityName) {
+    const p = document.createElement("p");
+    p.id = cityName;
+    p.innerHTML = cityName;
+    p.addEventListener("click", onclickHistoryLine);
+    return p;
   }
 
   async function updateHistoryBlock(cityName) {
-    if (!historySet.has(cityName)) {
-      const historyElement = element.querySelector("#history");
-      historySet.add(cityName);
-      const p = document.createElement("p");
-      p.innerHTML = cityName;
-      p.addEventListener("click", onclickHistoryLine);
+    const historyElement = element.querySelector("#history");
+    if (historyList.includes(cityName)) {
+      historyList.splice(historyList.indexOf(cityName), 1);
+      historyList.unshift(cityName);
+
+      const p = historyElement.querySelector(`[id='${cityName}']`);
+
+      historyElement.removeChild(p);
+      historyElement.querySelector("span").insertAdjacentElement("afterend", p);
+    } else {
+      historyList.unshift(cityName);
+      const p = createHistoryParagraph(cityName);
+
       historyElement.querySelector("span").insertAdjacentElement("afterend", p);
 
-      if (historyElement.querySelectorAll("p").length > maxHistorylines) {
-        historySet.delete(historyElement.lastElementChild.innerHTML);
+      if (historyList.length > maxHistorylines) {
+        historyList.pop();
         historyElement.removeChild(historyElement.lastElementChild);
       }
-
-      setHistorySet(historySet);
     }
+    setHistorySet(historyList);
   }
 
   const ipInfo = await getInfoByIP();
@@ -78,8 +93,11 @@ export default async function weatherApp(element) {
   <div id="history" class="history-block">
     <span>History:</span>
   </div>`;
-  if (getHistorySet().size > 0) {
-    getHistorySet().forEach((cityName) => updateHistoryBlock(cityName));
+  const localHistoryList = getHistoryList();
+  if (localHistoryList.length > 0) {
+    localHistoryList
+      .reverse()
+      .forEach((cityName) => updateHistoryBlock(cityName));
   }
   if (ipInfo.region) updateWeather(ipInfo.region);
 

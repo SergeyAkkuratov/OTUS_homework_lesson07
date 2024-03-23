@@ -10,6 +10,8 @@ jest.mock("./externalRequests", () => ({
   getInfoByIP: jest.fn(),
 }));
 
+const maxHistorylines = 10;
+
 describe("Weather application tests", () => {
   let el;
 
@@ -38,9 +40,7 @@ describe("Weather application tests", () => {
   function historyCityNameClick(cityName) {
     if (cityName in weather)
       exteranlApi.getWeather.mockReturnValueOnce(weather[cityName]);
-    [...el.querySelector("#history").querySelectorAll("p")]
-      .find((element) => element.innerHTML.trim() === cityName)
-      .click();
+    el.querySelector("#history").querySelector(`[id='${cityName}']`).click();
   }
 
   beforeEach(() => {
@@ -104,7 +104,7 @@ describe("Weather application tests", () => {
 
   it("History block contains only 10 last cities", async () => {
     const citiyNames = [];
-    for (let i = 1; i <= 10; i += 1) {
+    for (let i = 1; i <= maxHistorylines; i += 1) {
       specifyCityName(`City_${i}`);
       citiyNames.unshift(`City_${i}`);
       submit();
@@ -118,7 +118,9 @@ describe("Weather application tests", () => {
     // Надо подождать, когда все асинк функции закончатся, а потом продолжать выполнять синхронный код
     await new Promise(process.nextTick);
 
-    expect(getAllHistoryParagraphs()).toStrictEqual(citiyNames.slice(0, 10));
+    expect(getAllHistoryParagraphs()).toStrictEqual(
+      citiyNames.slice(0, maxHistorylines),
+    );
   });
 
   it("Show alert if any errors occured", async () => {

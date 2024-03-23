@@ -1,28 +1,11 @@
-function setToString(set) {
-  let str = "";
-  set.forEach((value) => {
-    str += `${value} `;
-  });
-  return str.trim();
-}
-
-function stringToSet(string) {
-  const set = new Set();
-  string.split(" ").forEach((value) => {
-    set.add(value);
-  });
-  return set;
-}
-
-export function getHistorySet() {
-  let historySet = new Set();
+export function getHistoryList() {
   const historyString = localStorage.getItem("history");
   if (historyString !== null && historyString.length > 0) {
-    historySet = stringToSet(historyString);
+    return historyString.split(" ");
   }
-  return historySet;
+  return [];
 }
 
-export function setHistorySet(historySet) {
-  localStorage.setItem("history", setToString(historySet));
+export function setHistorySet(list) {
+  localStorage.setItem("history", list.join(" "));
 }
