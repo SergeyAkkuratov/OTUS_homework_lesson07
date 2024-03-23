@@ -28,5 +28,16 @@ module.exports = {
         ignorePackages: true,
       },
     ],
+    "import/no-extraneous-dependencies": [
+      "off",
+      {
+        devDependencies: [
+          "**/*.test.ts?(x)",
+          "**/*.spec.ts?(x)",
+          "**/test-utils.ts",
+          "webpack.config.js",
+        ],
+      },
+    ],
   },
 };
