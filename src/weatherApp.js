@@ -28,11 +28,11 @@ export default async function weatherApp(rootElement) {
     }
   }
 
-  async function updateWeather(cityNameParam, updateHistoryFlag) {
+  async function updateWeather(cityNameParam) {
     const cityName = decodeURIComponent(cityNameParam);
     const weather = await getWeather(cityName);
     if (weather.cod === 200) {
-      if (updateHistoryFlag) await updateHistoryBlock(cityName);
+      await updateHistoryBlock(cityName);
       const map = await getMap(weather.coord);
       showMap(map);
       showWeather(weather);
@@ -94,17 +94,17 @@ export default async function weatherApp(rootElement) {
       router.navigate(`/weather/${cityName}`);
     });
 
-  rootElement.querySelectorAll("a").forEach((link) =>
-    link.addEventListener("click", (event) => {
+  rootElement.addEventListener("click", (event) => {
+    if (event.target instanceof HTMLAnchorElement) {
       event.preventDefault();
-      router.navigate(link.href);
-    }),
-  );
+      router.navigate(event.target.href);
+    }
+  });
 
   router.addRoute({
     path: /^\/weather\/(?<cityName>.+)$/,
     onEnter: async (params) => {
-      updateWeather(params.cityName, true);
+      updateWeather(params.cityName);
     },
   });
 
@@ -113,7 +113,11 @@ export default async function weatherApp(rootElement) {
     onEnter: () => {
       rootElement.innerHTML = aboutTemplate;
     },
-    onLeave: () => {
+  });
+
+  router.addRoute({
+    path: "/",
+    onEnter: () => {
       rootElement.innerHTML = mainTemplate;
     },
   });

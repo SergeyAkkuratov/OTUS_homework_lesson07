@@ -31,7 +31,7 @@ describe("Weather application tests", () => {
     const map = el.querySelector("#map");
     expect(map).not.toBe(null);
     expect(map.alt).toBe("Couldn't get image of map");
-    expect(map.src).toBe("http://localhost/");
+    expect(map.src).toBe("http://localhost/weather/Moscow");
   });
 
   it("Error with getInfoByIP", async () => {

@@ -4,12 +4,10 @@ export const mainTemplate = `
 <div>
 <div class="info-block">
   <form id="weatherForm" class="form-block">
-      <input id="userInput" class="form-input" placeholder="Type city and press enter" required autofocus>
+      <input id="userInput" class="form-input" placeholder="Type city and press enter" required="" autofocus="">
   </form>
   <div id="weather">
-      <img id="map"
-          src="${oopsImg}"
-          alt="Couldn't get image of map"></img>
+      <img id="map" src="${oopsImg}" alt="Couldn't get image of map">
   </div>
   <div id="info">
     <span>Wait for city name</span>
@@ -26,17 +24,17 @@ export const mainTemplate = `
 
 export const aboutTemplate = `
 <div align="center">
-<h3>Приложение &quot;Прогноз погоды&quot;</h3>
+<h3>Приложение "Прогноз погоды"</h3>
 <p>
-    Выполнение домашнего задания для лекции &quot;Современный инструментарий при разработке клиентских (и не только
-    приложений)&quot;
+    Выполнение домашнего задания для лекции "Современный инструментарий при разработке клиентских (и не только
+    приложений)"
 </p>
 
 <h2>О проекте</h2>
-<p>Приложение &quot;Прогноз погоды&quot; это Web приложение разработанное на языке JavaScript. Оно предназначено для
+<p>Приложение "Прогноз погоды" это Web приложение разработанное на языке JavaScript. Оно предназначено для
     просмотра текущей погоды в конкретном городе.</p>
 <p>Приложение показывает текущую температуру в градусах цельсия и общее состоянии погоды, обозначенное иконкой.</p>
 <p>Так же приложение отображает компактную картинку с картой выбранного города.</p>
-<a href="/">Main<a>
+<a href="/">Main</a>
 </div>
 `;
