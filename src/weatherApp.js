@@ -43,7 +43,7 @@ export default async function weatherApp(rootElement) {
   }
 
   function onclickHistoryLine(event) {
-    router.navigate(`/weather/${event.target.innerHTML}`);
+    router.navigate(`${PREFIX}/weather/${event.target.innerHTML}`);
   }
 
   function createHistoryParagraph(cityName) {
@@ -102,13 +102,13 @@ export default async function weatherApp(rootElement) {
       const inputEl = formElement.querySelector("#userInput");
       const cityName = inputEl.value;
       inputEl.value = "";
-      router.navigate(`/weather/${cityName}`);
+      router.navigate(`${PREFIX}/weather/${cityName}`);
     });
 
   rootElement.addEventListener("click", (event) => {
     if (event.target instanceof HTMLAnchorElement) {
       event.preventDefault();
-      router.navigate(event.target.pathname);
+      router.navigate(PREFIX + event.target.pathname);
     }
   });
 
@@ -135,5 +135,5 @@ export default async function weatherApp(rootElement) {
   });
 
   loadHistory();
-  if (ipInfo.city) router.navigate(`/weather/${ipInfo.city}`);
+  if (ipInfo.city) router.navigate(`${PREFIX}/weather/${ipInfo.city}`);
 }
