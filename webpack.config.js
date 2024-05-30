@@ -12,7 +12,7 @@ module.exports = {
     filename: "[name].js",
     chunkFilename: "[name].chunk.js",
     path: path.resolve(__dirname, "dist"),
-    publicPath: "/",
+    publicPath: `${PREFIX}/`,
   },
   plugins: [
     new HtmlWebpackPlugin({
