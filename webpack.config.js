@@ -1,5 +1,5 @@
 const path = require("path");
-const { DefinePlugin } = require("webpack");
+// const { DefinePlugin } = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const isProduction =
@@ -25,9 +25,13 @@ module.exports = {
       template: "src/index.html",
       filename: "index.html",
     }),
-    new DefinePlugin({
-      PREFIX: JSON.stringify(PREFIX),
+    new HtmlWebpackPlugin({
+      template: "src/index.html",
+      filename: "404.html",
     }),
+    // new DefinePlugin({
+    //   PREFIX: JSON.stringify(PREFIX),
+    // }),
   ],
   module: {
     rules: [

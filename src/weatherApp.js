@@ -108,7 +108,7 @@ export default async function weatherApp(rootElement) {
     if (event.target instanceof HTMLAnchorElement) {
       event.preventDefault();
       // eslint-disable-next-line no-undef
-      router.navigate(PREFIX + event.target.pathname);
+      router.navigate(event.target.pathname);
     }
   });
 
