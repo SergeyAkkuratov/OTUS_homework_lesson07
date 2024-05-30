@@ -41,9 +41,7 @@ module.exports = {
     ],
   },
   devServer: {
-    compress: true,
-    port: 9000,
-    watchFiles: ["dist/index.html"],
+    static: "./dist",
     historyApiFallback: true,
   },
   optimization: {

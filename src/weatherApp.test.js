@@ -45,6 +45,7 @@ describe("Weather application tests", () => {
   }
 
   beforeEach(() => {
+    global.PREFIX = "";
     localStorage.clear();
     // Моки
     exteranlApi.getWeather.mockReturnValue(weather.Moscow);
