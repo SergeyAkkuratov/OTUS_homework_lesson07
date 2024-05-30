@@ -7,12 +7,18 @@ module.exports = {
     filename: "[name].js",
     chunkFilename: "[name].chunk.js",
     path: path.resolve(__dirname, "dist"),
+    publicPath: "/",
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/template.html",
       favicon: "./src/assets/favicon.png",
       filename: "./index.html",
+    }),
+    new HtmlWebpackPlugin({
+      template: "./src/template.html",
+      favicon: "./src/assets/favicon.png",
+      filename: "404.html",
     }),
   ],
   module: {
@@ -28,7 +34,10 @@ module.exports = {
     ],
   },
   devServer: {
-    static: "./dist",
+    compress: true,
+    port: 9000,
+    watchFiles: ["dist/index.html"],
+    historyApiFallback: true,
   },
   optimization: {
     runtimeChunk: "single",

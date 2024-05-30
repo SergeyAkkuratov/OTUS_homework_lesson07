@@ -64,3 +64,14 @@
   color: red;
   cursor: pointer;
 }
+
+.bottom {
+  clear: both;
+  position: relative;
+}
+
+.bottom a {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
