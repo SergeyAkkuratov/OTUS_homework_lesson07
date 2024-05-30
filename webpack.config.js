@@ -12,13 +12,13 @@ module.exports = {
     filename: "[name].js",
     chunkFilename: "[name].chunk.js",
     path: path.resolve(__dirname, "dist"),
-    publicPath: `${PREFIX}/`,
+    publicPath: isProduction ? "/OTUS_homework_lesson07/" : "/", // Changed here
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/template.html",
       favicon: "./src/assets/favicon.png",
-      filename: "./index.html",
+      filename: "index.html", // Changed here
     }),
     new HtmlWebpackPlugin({
       template: "./src/template.html",
