@@ -22,8 +22,8 @@ module.exports = {
   devtool: "inline-source-map",
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/index.html",
-      filename: "./index.html",
+      template: "src/index.html",
+      filename: "index.html",
     }),
     new DefinePlugin({
       PREFIX: JSON.stringify(PREFIX),
