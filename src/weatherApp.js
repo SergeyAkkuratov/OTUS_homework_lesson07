@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-alert */
 /* eslint no-param-reassign: ["error", { "props": false }] */
@@ -107,27 +108,26 @@ export default async function weatherApp(rootElement) {
   rootElement.addEventListener("click", (event) => {
     if (event.target instanceof HTMLAnchorElement) {
       event.preventDefault();
-      // eslint-disable-next-line no-undef
       router.navigate(event.target.pathname);
     }
   });
 
   router.addRoute({
-    path: /^\/weather\/(?<cityName>.+)$/,
+    path: new RegExp(`^${PREFIX}/weather/(?<cityName>.+)$`),
     onEnter: async (params) => {
       updateWeather(params.cityName);
     },
   });
 
   router.addRoute({
-    path: "/about",
+    path: `${PREFIX}/about`,
     onEnter: () => {
       rootElement.innerHTML = aboutTemplate;
     },
   });
 
   router.addRoute({
-    path: "/",
+    path: `${PREFIX}/`,
     onEnter: () => {
       rootElement.innerHTML = mainTemplate;
       loadHistory();
