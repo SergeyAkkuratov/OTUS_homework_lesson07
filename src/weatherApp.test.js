@@ -184,6 +184,12 @@ describe("Weather application tests", () => {
     expect(el.innerHTML).toBe(aboutTemplate);
 
     el.querySelector("a").click();
-    expect(el.innerHTML).toBe(mainTemplate);
+
+    expect(el.innerHTML).toBe(
+      mainTemplate.replace(
+        "<span>History:</span>",
+        `<span>History:</span><p id="Moscow">Moscow</p>`,
+      ),
+    );
   });
 });
