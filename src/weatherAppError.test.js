@@ -11,6 +11,10 @@ jest.mock("./externalRequests", () => ({
 }));
 
 describe("Weather application tests", () => {
+  beforeEach(() => {
+    global.PREFIX = "";
+  });
+
   it("Error with getMap", async () => {
     // Моки
     exteranlApi.getWeather.mockReturnValue(weather.Moscow);
