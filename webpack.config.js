@@ -2,8 +2,9 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { DefinePlugin } = require("webpack");
 
-const PREFIX =
-  process.env.NODE_ENV === "production" ? "/OTUS_homework_lesson07" : "";
+const isProduction =
+  process.argv[process.argv.indexOf("--mode") + 1] === "production";
+const PREFIX = isProduction ? "/OTUS_homework_lesson07" : "";
 
 module.exports = {
   entry: "./src/index.js",
