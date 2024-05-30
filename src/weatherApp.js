@@ -55,26 +55,36 @@ export default async function weatherApp(rootElement) {
 
   async function updateHistoryBlock(cityName) {
     const historyElement = rootElement.querySelector("#history");
+
     if (historyList.includes(cityName)) {
       historyList.splice(historyList.indexOf(cityName), 1);
-      historyList.unshift(cityName);
+    }
 
-      const p = historyElement.querySelector(`[id='${cityName}']`);
+    historyList.unshift(cityName);
+    let p = historyElement.querySelector(`[id='${cityName}']`);
 
+    if (p) {
       historyElement.removeChild(p);
       historyElement.querySelector("span").insertAdjacentElement("afterend", p);
     } else {
-      historyList.unshift(cityName);
-      const p = createHistoryParagraph(cityName);
-
+      p = createHistoryParagraph(cityName);
       historyElement.querySelector("span").insertAdjacentElement("afterend", p);
+    }
 
-      if (historyList.length > maxHistorylines) {
-        historyList.pop();
-        historyElement.removeChild(historyElement.lastElementChild);
-      }
+    if (historyList.length > maxHistorylines) {
+      historyList.pop();
+      historyElement.removeChild(historyElement.lastElementChild);
     }
     setHistorySet(historyList);
+  }
+
+  function loadHistory() {
+    const localHistoryList = getHistoryList();
+    if (localHistoryList.length > 0) {
+      localHistoryList
+        .reverse()
+        .forEach((cityName) => updateHistoryBlock(cityName));
+    }
   }
 
   const ipInfo = await getInfoByIP();
@@ -97,7 +107,8 @@ export default async function weatherApp(rootElement) {
   rootElement.addEventListener("click", (event) => {
     if (event.target instanceof HTMLAnchorElement) {
       event.preventDefault();
-      router.navigate(event.target.href);
+      // eslint-disable-next-line no-undef
+      router.navigate(PREFIX + event.target.href);
     }
   });
 
@@ -119,15 +130,10 @@ export default async function weatherApp(rootElement) {
     path: "/",
     onEnter: () => {
       rootElement.innerHTML = mainTemplate;
+      loadHistory();
     },
   });
 
-  const localHistoryList = getHistoryList();
-  if (localHistoryList.length > 0) {
-    localHistoryList
-      .reverse()
-      .forEach((cityName) => updateHistoryBlock(cityName));
-  }
-
+  loadHistory();
   if (ipInfo.city) router.navigate(`/weather/${ipInfo.city}`);
 }

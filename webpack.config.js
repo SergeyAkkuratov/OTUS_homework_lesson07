@@ -1,5 +1,9 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { DefinePlugin } = require("webpack");
+
+const PREFIX =
+  process.env.NODE_ENV === "production" ? "/OTUS_homework_lesson07" : "";
 
 module.exports = {
   entry: "./src/index.js",
@@ -19,6 +23,9 @@ module.exports = {
       template: "./src/template.html",
       favicon: "./src/assets/favicon.png",
       filename: "404.html",
+    }),
+    new DefinePlugin({
+      PREFIX: JSON.stringify(PREFIX),
     }),
   ],
   module: {
