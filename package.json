@@ -51,5 +51,8 @@
     "lint-staged": {
         "*.{js,ts,html}": "eslint --fix",
         "*.{js,ts,css,md,yml}": "prettier --write"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "^2.2.5"
     }
 }
