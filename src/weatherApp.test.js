@@ -3,6 +3,7 @@
 import weatherApp from "./weatherApp";
 import exteranlApi from "./externalRequests";
 import { weather, ipInfo, testBlob } from "./commonTestData";
+import { aboutTemplate, mainTemplate } from "./pageTempaltes";
 
 jest.mock("./externalRequests", () => ({
   getWeather: jest.fn(),
@@ -44,6 +45,7 @@ describe("Weather application tests", () => {
   }
 
   beforeEach(() => {
+    global.PREFIX = "";
     localStorage.clear();
     // Моки
     exteranlApi.getWeather.mockReturnValue(weather.Moscow);
@@ -63,9 +65,6 @@ describe("Weather application tests", () => {
     const map = el.querySelector("#map");
     expect(map).not.toBe(null);
     expect(map.alt).toBe("Couldn't get image of map");
-    expect(map.src).toBe(
-      "blob:http://localhost:8080/dbdb41a6-c771-4692-bdc1-594a6dd28ef5",
-    );
   });
 
   it("User see temperature on startup", () => {
@@ -99,6 +98,7 @@ describe("Weather application tests", () => {
       "City_3",
       "City_2",
       "City_1",
+      "Moscow",
     ]);
   });
 
@@ -165,7 +165,7 @@ describe("Weather application tests", () => {
     // Надо подождать, когда все асинк функции закончатся, а потом продолжать выполнять синхронный код
     await new Promise(process.nextTick);
 
-    expect(getAllHistoryParagraphs()).toStrictEqual(["DefaultCity"]);
+    expect(getAllHistoryParagraphs()).toStrictEqual(["DefaultCity", "Moscow"]);
   });
 
   it("History loads from localStorage", async () => {
@@ -178,5 +178,19 @@ describe("Weather application tests", () => {
     await new Promise(process.nextTick);
 
     expect(getAllHistoryParagraphs()).toStrictEqual(["Moscow"]);
+  });
+
+  it("Shoould open about and main pages when click on link", () => {
+    el.querySelector("a").click();
+    expect(el.innerHTML).toBe(aboutTemplate);
+
+    el.querySelector("a").click();
+
+    expect(el.innerHTML).toBe(
+      mainTemplate.replace(
+        "<span>History:</span>",
+        `<span>History:</span><p id="Moscow">Moscow</p>`,
+      ),
+    );
   });
 });

@@ -44,7 +44,7 @@ export const weather = {
 };
 
 export const ipInfo = {
-  region: "Moscow",
+  city: "Moscow",
 };
 
 export const testBlob = new Blob([

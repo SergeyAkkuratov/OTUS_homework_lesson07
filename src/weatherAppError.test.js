@@ -11,6 +11,10 @@ jest.mock("./externalRequests", () => ({
 }));
 
 describe("Weather application tests", () => {
+  beforeEach(() => {
+    global.PREFIX = "";
+  });
+
   it("Error with getMap", async () => {
     // Моки
     exteranlApi.getWeather.mockReturnValue(weather.Moscow);
@@ -31,7 +35,7 @@ describe("Weather application tests", () => {
     const map = el.querySelector("#map");
     expect(map).not.toBe(null);
     expect(map.alt).toBe("Couldn't get image of map");
-    expect(map.src).toBe("http://localhost/");
+    expect(map.src).toBe("http://localhost/weather/Moscow");
   });
 
   it("Error with getInfoByIP", async () => {
