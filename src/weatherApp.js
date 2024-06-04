@@ -88,23 +88,30 @@ export default async function weatherApp(rootElement) {
     }
   }
 
-  const ipInfo = await getInfoByIP();
+  function switchToMainPage() {
+    rootElement.innerHTML = mainTemplate;
 
-  rootElement.innerHTML = mainTemplate;
+    rootElement
+      .querySelector("#weatherForm")
+      .addEventListener("submit", (event) => {
+        event.preventDefault();
 
-  rootElement
-    .querySelector("#weatherForm")
-    .addEventListener("submit", (event) => {
-      event.preventDefault();
+        // читаем значение из формы
+        const formElement = event.target;
+        const inputEl = formElement.querySelector("#userInput");
+        const cityName = inputEl.value;
+        inputEl.value = "";
+        router.navigate(`${PREFIX}/weather/${cityName}`);
+      });
 
-      // читаем значение из формы
-      const formElement = event.target;
-      const inputEl = formElement.querySelector("#userInput");
-      const cityName = inputEl.value;
-      inputEl.value = "";
-      router.navigate(`${PREFIX}/weather/${cityName}`);
-    });
+    loadHistory();
+  }
 
+  function switchToAboutPage() {
+    rootElement.innerHTML = aboutTemplate;
+  }
+
+  // Объявляем общие для всех старниц роуты и листенеры
   rootElement.addEventListener("click", (event) => {
     if (event.target instanceof HTMLAnchorElement) {
       event.preventDefault();
@@ -121,19 +128,16 @@ export default async function weatherApp(rootElement) {
 
   router.addRoute({
     path: `${PREFIX}/about`,
-    onEnter: () => {
-      rootElement.innerHTML = aboutTemplate;
-    },
+    onEnter: switchToAboutPage,
   });
 
   router.addRoute({
     path: `${PREFIX}/`,
-    onEnter: () => {
-      rootElement.innerHTML = mainTemplate;
-      loadHistory();
-    },
+    onEnter: switchToMainPage,
   });
 
-  loadHistory();
+  // Стартовые действия при открытия приложения
+  switchToMainPage();
+  const ipInfo = await getInfoByIP();
   if (ipInfo.city) router.navigate(`${PREFIX}/weather/${ipInfo.city}`);
 }
