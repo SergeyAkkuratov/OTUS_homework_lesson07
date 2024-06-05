@@ -19,26 +19,26 @@ export default class Weather {
         <div id="history" class="history-block">
             <span>History:</span>
         </div>
-        <span class="loader" display: none></span>
+        <span class="loader"></span>
     `;
-
-    private historyList: string[] = [];
 
     private readonly maxHistorylines: number = 10;
 
-    rootElement: HTMLElement;
+    private readonly rootElement: HTMLElement;
 
-    cityNameField: HTMLInputElement;
+    private readonly historyList: string[] = [];
 
-    cityNameForm: HTMLFormElement;
+    private readonly cityNameField: HTMLInputElement;
 
-    weatherBlock: HTMLDivElement;
+    private readonly cityNameForm: HTMLFormElement;
 
-    historyBlock: HTMLDivElement;
+    private readonly weatherBlock: HTMLDivElement;
 
-    cityMap: HTMLImageElement;
+    private readonly historyBlock: HTMLDivElement;
 
-    loader: HTMLSpanElement;
+    private readonly cityMap: HTMLImageElement;
+
+    private readonly loader: HTMLSpanElement;
 
     constructor(rootElement: HTMLElement) {
         this.rootElement = rootElement;
@@ -49,26 +49,34 @@ export default class Weather {
         this.loader = this.rootElement.querySelector(".loader")!;
         this.weatherBlock = this.rootElement.querySelector("#info")!;
         this.cityMap = this.rootElement.querySelector("#cityMap")!;
-        this.historyBlock = rootElement.querySelector("#history")!;
+        this.historyBlock = this.rootElement.querySelector("#history")!;
     }
 
     init(): void {
+        // subscribe for redux state
         weatherStore.subscribe(this.render.bind(this));
+
+        // subscribe for submit event
         this.cityNameForm.addEventListener("submit", (event) => {
             event.preventDefault();
             weatherStore.dispatch(getWeather(this.cityNameField.value));
             this.cityNameField.value = "";
         });
 
+        // loading history
+        this.historyList.concat(localStorage.getItem("history")?.split(";") ?? []);
+        this.historyList.reverse().forEach((cityName) => this.updateHistoryBlock(cityName));
+
+        // get weather by IP
         weatherStore.dispatch(getWeather());
     }
 
-    async render(): Promise<void> {
+    private async render(): Promise<void> {
         const state = weatherStore.getState();
         switch (state.status) {
             case AppStatus.ERROR: {
                 this.loader.style.display = "none";
-                alert(selectLastError(state));
+                this.showErrorMessage(selectLastError(state).message);
                 break;
             }
             case AppStatus.LOADING: {
@@ -87,7 +95,7 @@ export default class Weather {
                         <img src="http://openweathermap.org/img/wn/${weather.icon}@2x.png" alt="Couldn't load icon of weather">
                     `;
                 } else {
-                    alert("Непрдивиденная ошибка - нет данных о городе!");
+                    this.showErrorMessage("Непрдивиденная ошибка - нет данных о городе!");
                 }
                 break;
             }
@@ -96,7 +104,7 @@ export default class Weather {
         }
     }
 
-    async updateHistoryBlock(cityName: string): Promise<void> {
+    private async updateHistoryBlock(cityName: string): Promise<void> {
         if (this.historyList.includes(cityName)) {
             this.historyList.splice(this.historyList.indexOf(cityName), 1);
         }
@@ -119,15 +127,12 @@ export default class Weather {
             this.historyList.pop();
             this.historyBlock.removeChild(this.historyBlock.lastElementChild!);
         }
-        this.setHistory();
-    }
-
-    private setHistory(): void {
         localStorage.setItem("history", this.historyList.join(";"));
     }
 
-    private loadHistory(): void {
-        this.historyList = localStorage.getItem("history")?.split(";") ?? [];
-        this.historyList.reverse().forEach((cityName) => this.updateHistoryBlock(cityName));
+    // eslint-disable-next-line class-methods-use-this
+    private showErrorMessage(message: string) {
+        // eslint-disable-next-line no-alert
+        alert(message);
     }
 }
