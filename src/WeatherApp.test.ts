@@ -3,6 +3,9 @@ import fs from "fs";
 import Weather from "./WeatherApp";
 import * as externalRequests from "./externalRequests";
 import { IWeatherData } from "./WeatherRedux/Types";
+import { weatherStore } from "./WeatherRedux/Store";
+import { ActionTypes, WeatherAction } from "./WeatherRedux/Actions";
+import { Action, Store } from "@reduxjs/toolkit";
 
 describe("Weather class cehcks", () => {
     let weather: Weather;
@@ -14,6 +17,18 @@ describe("Weather class cehcks", () => {
         temp: 20.3,
         name: "Moscow",
     };
+
+    function storeActionDispatched(type: ActionTypes) {
+        const { dispatch } = weatherStore;
+        return new Promise<void>(resolve => {
+            weatherStore.dispatch = (action: WeatherAction) => {
+                if (action.type === type) {
+                    resolve();
+                }
+                return dispatch(action);
+            }
+        });
+    }
 
     beforeEach(() => {
         rootElement = document.createElement("div");
