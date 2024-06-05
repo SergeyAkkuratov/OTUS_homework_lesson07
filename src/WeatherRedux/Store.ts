@@ -1,16 +1,18 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { Dispatch, configureStore } from "@reduxjs/toolkit";
 import { initialState } from "./Types";
 import rootReducer from "./Reducer";
-import { errorAction, getWeatherAction, loadingAction } from "./Actions";
+import { WeatherAction, errorAction, getWeatherAction, loadingAction } from "./Actions";
 import { getCityName, getWeatherExternal } from "../externalRequests";
 
-export const weatherStore = configureStore({
-    reducer: rootReducer,
-    preloadedState: initialState,
-});
+export function getWeatherStore() {
+    return configureStore({
+        reducer: rootReducer,
+        preloadedState: initialState,
+    });
+}
 
 export function getWeather(cityName?: string) {
-    return async (dispatch: typeof weatherStore.dispatch) => {
+    return async (dispatch: Dispatch<WeatherAction>) => {
         dispatch(loadingAction());
         try {
             if (cityName) {

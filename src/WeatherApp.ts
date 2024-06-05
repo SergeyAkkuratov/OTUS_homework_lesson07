@@ -1,7 +1,9 @@
+import { EnhancedStore, StoreEnhancer, ThunkDispatch, Tuple, UnknownAction } from "@reduxjs/toolkit";
 import oopsImg from "./images/oops.png";
 import { selectCityData, selectLastError } from "./WeatherRedux/Selectors";
-import { getWeather, weatherStore } from "./WeatherRedux/Store";
-import { AppStatus } from "./WeatherRedux/Types";
+import { getWeather } from "./WeatherRedux/Store";
+import { AppStatus, WeatherState } from "./WeatherRedux/Types";
+import { WeatherAction } from "./WeatherRedux/Actions";
 
 export default class Weather {
     private readonly mainTemplate: string = `
@@ -24,6 +26,19 @@ export default class Weather {
 
     private readonly maxHistorylines: number = 10;
 
+    private readonly store: EnhancedStore<
+        WeatherState,
+        WeatherAction,
+        Tuple<
+            [
+                StoreEnhancer<{
+                    dispatch: ThunkDispatch<WeatherState, undefined, UnknownAction>;
+                }>,
+                StoreEnhancer,
+            ]
+        >
+    >;
+
     private readonly rootElement: HTMLElement;
 
     private readonly historyList: string[] = [];
@@ -40,7 +55,8 @@ export default class Weather {
 
     private readonly loader: HTMLSpanElement;
 
-    constructor(rootElement: HTMLElement) {
+    constructor(store: EnhancedStore<WeatherState, WeatherAction>, rootElement: HTMLElement) {
+        this.store = store;
         this.rootElement = rootElement;
         this.rootElement.innerHTML = this.mainTemplate;
 
@@ -54,12 +70,12 @@ export default class Weather {
 
     init(): void {
         // subscribe for redux state
-        weatherStore.subscribe(this.render.bind(this));
+        this.store.subscribe(this.render.bind(this));
 
         // subscribe for submit event
         this.cityNameForm.addEventListener("submit", (event) => {
             event.preventDefault();
-            weatherStore.dispatch(getWeather(this.cityNameField.value));
+            this.store.dispatch(getWeather(this.cityNameField.value));
             this.cityNameField.value = "";
         });
 
@@ -68,11 +84,11 @@ export default class Weather {
         this.historyList.reverse().forEach((cityName) => this.updateHistoryBlock(cityName));
 
         // get weather by IP
-        weatherStore.dispatch(getWeather());
+        this.store.dispatch(getWeather());
     }
 
     private async render(): Promise<void> {
-        const state = weatherStore.getState();
+        const state = this.store.getState();
         switch (state.status) {
             case AppStatus.ERROR: {
                 this.loader.style.display = "none";
@@ -88,14 +104,14 @@ export default class Weather {
                 const weather = selectCityData(state);
                 if (weather) {
                     await this.updateHistoryBlock(weather.name);
-                    this.cityMap.src = weather.mapData ? URL.createObjectURL(weather.mapData) : oopsImg;
+                    this.cityMap.src = `https://static-maps.yandex.ru/v1?ll=${weather.lon},${weather.lat}&size=300,300&z=8&apikey=21ae407c-6788-4393-bbfa-d1cf463287b0`;
                     this.weatherBlock.innerHTML = `
                         <h1>${weather.name}</h1>
                         <h2>Temperature: ${weather.temp} C</h2>
                         <img src="http://openweathermap.org/img/wn/${weather.icon}@2x.png" alt="Couldn't load icon of weather">
                     `;
                 } else {
-                    this.showErrorMessage("Непрдивиденная ошибка - нет данных о городе!");
+                    this.showErrorMessage("Непрдивиденная ошибка - нет данных с городе!");
                 }
                 break;
             }
@@ -119,7 +135,7 @@ export default class Weather {
             const newHistoryLine = document.createElement("p");
             newHistoryLine.id = cityName;
             newHistoryLine.innerHTML = cityName;
-            newHistoryLine.addEventListener("click", () => weatherStore.dispatch(getWeather(cityName)));
+            newHistoryLine.addEventListener("click", () => this.store.dispatch(getWeather(cityName)));
             this.historyBlock.querySelector("span")!.insertAdjacentElement("afterend", newHistoryLine);
         }
 

@@ -5,7 +5,8 @@ export enum AppStatus {
 }
 
 export interface IWeatherData {
-    mapData?: Blob;
+    lat: number;
+    lon: number;
     icon: string;
     temp: number;
     name: string;
