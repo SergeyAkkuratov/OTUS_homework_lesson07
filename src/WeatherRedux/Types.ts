@@ -1,7 +1,7 @@
 export enum AppStatus {
-    READY,
-    LOADING,
-    ERROR,
+    READY = "READY",
+    LOADING = "LOADING",
+    ERROR = "ERROR",
 }
 
 export interface IWeatherData {

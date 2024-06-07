@@ -1,10 +1,10 @@
 /* eslint-disable dot-notation */
-import { EnhancedStore, StoreEnhancer, ThunkDispatch, Tuple, UnknownAction } from "@reduxjs/toolkit";
+import { EnhancedStore, StoreEnhancer, ThunkDispatch, Tuple, UnknownAction, Unsubscribe } from "@reduxjs/toolkit";
 import Weather from "./WeatherApp";
 import * as externalRequests from "./externalRequests";
-import { IWeatherData, WeatherState } from "./WeatherRedux/Types";
+import { AppStatus, IWeatherData, WeatherState } from "./WeatherRedux/Types";
 import { getWeatherStore } from "./WeatherRedux/Store";
-import { ActionTypes, WeatherAction } from "./WeatherRedux/Actions";
+import { WeatherAction } from "./WeatherRedux/Actions";
 
 describe("Weather class cehcks", () => {
     let weather: Weather;
@@ -18,23 +18,23 @@ describe("Weather class cehcks", () => {
         name: "Moscow",
     };
 
-    function storeActionDispatched(
+    function weatherIsLoaded(
         store: EnhancedStore<
             WeatherState,
             WeatherAction,
             Tuple<[StoreEnhancer<{ dispatch: ThunkDispatch<WeatherState, undefined, UnknownAction> }>, StoreEnhancer]>
-        >,
-        type: ActionTypes
+        >
     ) {
-        const { dispatch } = store;
         return new Promise<void>((resolve) => {
-            // eslint-disable-next-line no-param-reassign
-            store.dispatch = ((action: WeatherAction) => {
-                dispatch(action);
-                if (action.type === type) {
+            let unsubscribe: Unsubscribe;
+            const isLoaded = () => {
+                if (store.getState()?.status === AppStatus.READY) {
                     resolve();
+                    unsubscribe?.();
                 }
-            }) as typeof dispatch;
+            };
+            unsubscribe = store.subscribe(isLoaded);
+            isLoaded();
         });
     }
 
@@ -58,12 +58,12 @@ describe("Weather class cehcks", () => {
 
     it("should do correct initialisation", async () => {
         jest.spyOn(externalRequests, "getWeatherExternal").mockReturnValueOnce(Promise.resolve(testWeather));
-        jest.spyOn(externalRequests, "getCityName").mockReturnValueOnce(Promise.resolve("Moscow"));
+        jest.spyOn(externalRequests, "getCityName").mockReturnValueOnce(Promise.resolve(testWeather.name));
 
         weather.init();
 
-        await storeActionDispatched(weather["store"], ActionTypes.GET_WEATHER);
+        await weatherIsLoaded(weather["store"]);
 
-        expect(weather["historyBlock"].innerHTML).toContain("<p>Moscow</p>");
+        expect(weather["historyBlock"].innerHTML).toContain("Moscow");
     });
 });
