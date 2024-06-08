@@ -89,6 +89,7 @@ export default class Weather {
 
     private async render(): Promise<void> {
         const state = this.store.getState();
+        // eslint-disable-next-line default-case
         switch (state.status) {
             case AppStatus.ERROR: {
                 this.loader.style.display = "none";
@@ -101,22 +102,16 @@ export default class Weather {
             }
             case AppStatus.READY: {
                 this.loader.style.display = "none";
-                const weather = selectCityData(state);
-                if (weather) {
-                    await this.updateHistoryBlock(weather.name);
-                    this.cityMap.src = `https://static-maps.yandex.ru/v1?ll=${weather.lon},${weather.lat}&size=300,300&z=8&apikey=21ae407c-6788-4393-bbfa-d1cf463287b0`;
-                    this.weatherBlock.innerHTML = `
+                const weather = selectCityData(state)!;
+                await this.updateHistoryBlock(weather.name);
+                this.cityMap.src = `https://static-maps.yandex.ru/v1?ll=${weather.lon},${weather.lat}&size=300,300&z=8&apikey=21ae407c-6788-4393-bbfa-d1cf463287b0`;
+                this.weatherBlock.innerHTML = `
                         <h1>${weather.name}</h1>
                         <h2>Temperature: ${weather.temp} C</h2>
                         <img src="http://openweathermap.org/img/wn/${weather.icon}@2x.png" alt="Couldn't load icon of weather">
                     `;
-                } else {
-                    this.showErrorMessage("Непрдивиденная ошибка - нет данных с городе!");
-                }
                 break;
             }
-            default:
-                break;
         }
     }
 

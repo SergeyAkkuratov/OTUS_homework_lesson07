@@ -7,9 +7,7 @@ export default function rootReducer(state: WeatherState = initialState, action: 
         case ActionTypes.LOADING:
             return { ...state, status: AppStatus.LOADING };
         case ActionTypes.ERROR: {
-            const newErrors = structuredClone(state.errors);
-            newErrors.push(action.payload as Error);
-            return { ...state, status: AppStatus.ERROR, errors: newErrors };
+            return { ...state, status: AppStatus.ERROR, errors: [...state.errors, action.payload as Error] };
         }
         case ActionTypes.GET_WEATHER:
             return { ...state, status: AppStatus.READY, city: action.payload as IWeatherData };

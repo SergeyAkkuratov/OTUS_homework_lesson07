@@ -3,7 +3,7 @@ import { IWeatherData } from "./WeatherRedux/Types";
 export async function getWeatherExternal(cityName: string): Promise<IWeatherData> {
     return fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${cityName}&appid=862e72718d993f06e2ca165446011711`)
         .then((response) => response.json())
-        .then(async (data) => {
+        .then((data) => {
             if (data.cod === 200) {
                 return {
                     ...data.coord,
@@ -12,7 +12,7 @@ export async function getWeatherExternal(cityName: string): Promise<IWeatherData
                     name: cityName,
                 };
             }
-            throw Error(`Во время получения информации вожникла ошибка:\n${data.message}`);
+            throw Error(`Во время получения информации вожникла ошибка: ${data.message}`);
         });
 }
 
