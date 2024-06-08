@@ -1,8 +1,8 @@
-import { enableFetchMocks } from 'jest-fetch-mock'
+import { enableFetchMocks } from "jest-fetch-mock";
 import { IWeatherData } from "./WeatherRedux/Types";
 import { getCityName, getWeatherExternal } from "./externalRequests";
 
-enableFetchMocks()
+enableFetchMocks();
 describe("External Requests", () => {
     const testWeather = {
         coord: {
@@ -24,16 +24,16 @@ describe("External Requests", () => {
 
     const errorWeather = {
         cood: 400,
-        message: "TEST ERROR"
-    }
+        message: "TEST ERROR",
+    };
 
     const testCity = {
-        city: "Moscow"
-    }
+        city: "Moscow",
+    };
 
     beforeEach(() => {
-        fetchMock.doMock()
-    })
+        fetchMock.doMock();
+    });
 
     it("should return weather data", async () => {
         fetchMock.mockOnce(JSON.stringify(testWeather));
@@ -62,5 +62,5 @@ describe("External Requests", () => {
 
         const cityRecivied = await getCityName();
         expect(cityRecivied).toStrictEqual("Moscow");
-    })
+    });
 });

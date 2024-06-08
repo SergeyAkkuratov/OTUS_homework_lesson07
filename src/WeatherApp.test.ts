@@ -68,7 +68,7 @@ describe("Weather class cehcks", () => {
     it("should do correct initialisation", async () => {
         jest.spyOn(externalRequests, "getWeatherExternal").mockReturnValueOnce(Promise.resolve(weatherMoscow));
         jest.spyOn(externalRequests, "getCityName").mockReturnValueOnce(Promise.resolve(weatherMoscow.name));
-        for(let i=1; i<11;i+=1){
+        for (let i = 1; i < 11; i += 1) {
             weather["historyList"].push(`City${i}`);
         }
         weather.init();
@@ -86,11 +86,11 @@ describe("Weather class cehcks", () => {
         jest.spyOn(externalRequests, "getWeatherExternal").mockReturnValueOnce(Promise.resolve(weatherMoscow));
         jest.spyOn(externalRequests, "getCityName").mockReturnValueOnce(Promise.resolve(weatherMoscow.name));
         weather.init();
-        
+
         await weatherIsLoaded(weather["store"], AppStatus.READY);
 
         jest.spyOn(externalRequests, "getWeatherExternal").mockReturnValueOnce(Promise.resolve(weatherSPB));
-        
+
         weather["cityNameField"].value = "SPB";
         weather["cityNameForm"].dispatchEvent(new Event("submit"));
 
@@ -105,7 +105,7 @@ describe("Weather class cehcks", () => {
     it("should correct show errors", async () => {
         jest.spyOn(externalRequests, "getWeatherExternal").mockReturnValueOnce(Promise.reject(Error("TEST ERROR")));
         jest.spyOn(externalRequests, "getCityName").mockReturnValueOnce(Promise.resolve(weatherMoscow.name));
-        jest.spyOn(window, 'alert').mockImplementation(() => {});
+        jest.spyOn(window, "alert").mockImplementation(() => {});
 
         weather.init();
 
@@ -118,11 +118,11 @@ describe("Weather class cehcks", () => {
         jest.spyOn(externalRequests, "getWeatherExternal").mockReturnValueOnce(Promise.resolve(weatherMoscow));
         jest.spyOn(externalRequests, "getCityName").mockReturnValueOnce(Promise.resolve(weatherMoscow.name));
         weather.init();
-        
+
         await weatherIsLoaded(weather["store"], AppStatus.READY);
 
         jest.spyOn(externalRequests, "getWeatherExternal").mockReturnValueOnce(Promise.resolve(weatherSPB));
-        
+
         weather["cityNameField"].value = "SPB";
         weather["cityNameForm"].dispatchEvent(new Event("submit"));
 
@@ -136,6 +136,6 @@ describe("Weather class cehcks", () => {
         await weatherIsLoaded(weather["store"], AppStatus.LOADING);
         await weatherIsLoaded(weather["store"], AppStatus.READY);
 
-        expect(weather["historyBlock"].innerHTML.trim()).toBe("<span>History:</span><p id=\"Moscow\">Moscow</p><p id=\"SPB\">SPB</p>");
+        expect(weather["historyBlock"].innerHTML.trim()).toBe('<span>History:</span><p id="Moscow">Moscow</p><p id="SPB">SPB</p>');
     });
 });
