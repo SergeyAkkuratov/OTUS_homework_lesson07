@@ -27,7 +27,7 @@ const config = {
     coverageDirectory: "coverage",
 
     // An array of regexp pattern strings used to skip coverage collection
-    coveragePathIgnorePatterns: ["node_modules", "mocks"],
+    coveragePathIgnorePatterns: ["node_modules", "mock"],
 
     // Indicates which provider should be used to instrument code for coverage
     // coverageProvider: "babel",
@@ -65,7 +65,7 @@ const config = {
     // forceCoverageMatch: [],
 
     // A path to a module which exports an async function that is triggered once before all test suites
-    // globalSetup: undefined,
+    // globalSetup: "./src/setup.test.ts",
 
     // A path to a module which exports an async function that is triggered once after all test suites
     // globalTeardown: undefined,
@@ -153,7 +153,7 @@ const config = {
     // snapshotSerializers: [],
 
     // The test environment that will be used for testing
-    testEnvironment: "./FixJSFOMEnvironment.ts",
+    testEnvironment: "jsdom",
 
     // Options that will be passed to the testEnvironment
     // testEnvironmentOptions: {},
